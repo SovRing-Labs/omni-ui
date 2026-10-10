@@ -1,0 +1,49 @@
+[package]
+name = "omni-ui"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/SovRing-Labs/omni-ui"
+description = "OmniUI — the NeuralOS app toolkit on the OMNI-RENDER engine (NEURAL-APPS-0 step 2)"
+
+[dependencies]
+# the engine's own dependencies (its modules are mounted read-only from ../omni-render/src, see src/main.rs)
+brotli-decompressor = "6.0.1"
+gif = "0.14.2"
+html5ever = "0.39"
+image-webp = "0.2.4"
+libc = "0.2.190"
+markup5ever_rcdom = "0.39.0"
+memmap2 = "0.9.11"
+miniz_oxide = "0.9.1"
+png = "0.18.1"
+serde_json = "1.0.151"
+ttf-parser = "0.25.1"
+zune-jpeg = "0.5.15"
+omni-spec = { path = "../omni-render/omni-spec" }
+ring = "0.17.14"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+webpki-roots = "1"
+# window + accessibility (AccessKit: the field's adapter for self-drawn toolkits -> AT-SPI on Linux)
+winit = "0.30"
+softbuffer = "0.4"
+accesskit = "0.25"
+accesskit_winit = "0.34"
+
+[features]
+default = []
+# the T25 core and its app: PolyForm side. Off by default; the permissive build never contains it (see LICENSING.md).
+t25 = []
+
+[[bin]]
+name = "omni-ui"
+path = "src/main.rs"
+
+# (b) the T25 app ships as its own binary, built only with the feature, under PolyForm
+[[bin]]
+name = "omni-ui-t25"
+path = "src/main.rs"
+required-features = ["t25"]
+
+[profile.release]
+debug = false

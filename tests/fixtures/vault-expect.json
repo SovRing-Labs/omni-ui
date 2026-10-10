@@ -1,0 +1,22 @@
+[
+ ["Home.md", "Gamma", "Gamma.md", "frontmatter property link"],
+ ["Home.md", "Alpha", "Alpha.md", "unique name"],
+ ["Home.md", "alpha", "Alpha.md", "case-insensitive"],
+ ["Home.md", "Projects/Beta", "Projects/Beta.md", "path from the vault root"],
+ ["Home.md", "Projects/Beta.md", "Projects/Beta.md", "path with .md"],
+ ["Home.md", "Beta", "AMBIGUOUS:Archive/Beta.md|Projects/Beta.md", "duplicate name, no same-folder candidate"],
+ ["Home.md", "Alpha#Section One", "Alpha.md#found", "heading exists"],
+ ["Home.md", "Alpha#Missing", "Alpha.md#missing", "note resolves, heading missing"],
+ ["Home.md", "#Local Heading", "SAME#found", "same-note heading"],
+ ["Home.md", "diagram.png", "_Attachments/diagram.png", "attachment by file name"],
+ ["Home.md", "Gamma|shown text", "Gamma.md", "alias"],
+ ["Home.md", "Notes/Delta Note.md", "Notes/Delta Note.md", "markdown link, %20"],
+ ["Home.md", "Nowhere", "UNRESOLVED", "not created yet"],
+ ["Home.md", "Archive/Beta", "Archive/Beta.md", "duplicate name by path"],
+ ["Home.md", "Delta Note", "Notes/Delta Note.md", "name with a space"],
+ ["Projects/Beta.md", "Gamma", "Gamma.md", "unique name from a subfolder"],
+ ["Projects/Beta.md", "Beta", "Projects/Beta.md", "duplicate name: same folder wins"],
+ ["Notes/Delta Note.md", "../Gamma", "Gamma.md", "relative wikilink"],
+ ["Notes/Delta Note.md", "../Home.md", "Home.md", "relative markdown link"],
+ ["Notes/Delta Note.md", "./Delta Note#Delta", "Notes/Delta Note.md#found", "./ self link with heading"]
+]
