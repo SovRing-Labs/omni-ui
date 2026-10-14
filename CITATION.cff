@@ -2,6 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "omni-ui: an app toolkit and web browser chrome on the omni-render engine"
 version: 0.1.0
+doi: "10.5281/zenodo.23282746"
 abstract: "Native apps (calendar, notes, mail, library, reader, vault, browser) drawn by the omni-render engine, with one widget tree that emits both pixels and an accessibility tree. Published as prior art."
 authors:
   - family-names: "De Santiago"
