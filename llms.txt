@@ -1,8 +1,9 @@
 # omni-ui
 
-> Native apps and a light-use web browser drawn by the omni-render engine.
+> Native apps and a light-use web browser (Omni Web) drawn by the omni-render engine: one packed widget tree is both drawn and read by assistive technology, and a broker plus one confined process per page.
 
 Setup: `git clone --depth 1 https://github.com/SovRing-Labs/omni-ui && cd omni-ui && git clone --depth 1 https://github.com/SovRing-Labs/omni-render ../omni-render && tools/pin-engine.sh $(git -C ../omni-render rev-parse HEAD) && cargo build --release && python3 tests/verify_calendar.py` (expect: exit 0).
+Status: pre-alpha, under development — read STATUS.md before relying on a number.
 Licence: MIT OR Apache-2.0 (omni-ui-t25 binary PolyForm).
 
 ## Docs

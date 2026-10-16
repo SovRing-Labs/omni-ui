@@ -1,0 +1,266 @@
+{
+  "_about": {
+    "repo": "omni-ui",
+    "url": "https://github.com/SovRing-Labs/omni-ui",
+    "one_line": "Native apps and a light-use web browser (Omni Web) drawn by the omni-render engine: one packed widget tree is both drawn and read by assistive technology, and a broker plus one confined process per page.",
+    "quicktest": "python3 -c \"import json;d=json.load(open('tests/fixtures/vault-expect.json'));assert len(d)==20;print(len(d),'fixture rows ok')\"",
+    "quicktest_s": 1,
+    "licence": "MIT OR Apache-2.0 for all source; the separate omni-ui-t25 binary is PolyForm Small Business 1.0.0 OR PolyForm Noncommercial 1.0.0; text CC BY 4.0 (LICENSING.md). Every verification script needs a cargo build of omni-ui and an omni-render checkout pinned by tools/pin-engine.sh; the quicktest only checks the answer-key fixture.",
+    "status_file": "STATUS.md",
+    "generated": "2026-10-16",
+    "schema": 1,
+    "source": "README.md, DOSSIER.md, TECHNICAL-DISCLOSURE.md (Part 1), LICENSING.md, tests/verify_*.py docstrings, tests/fixtures/vault-expect.json, tools/ram_bench.py"
+  },
+  "tests": [
+    {
+      "id": "U1",
+      "title": "Browser memory: 211.3 MiB vs Firefox 7,297.6 MiB on 10 pages",
+      "claim": "Ten pages, summed PSS over all processes: 211.3 MiB against 7,297.6 MiB for Firefox (2.9 %), script off; 308.8 against 7,423.6 MiB (4.2 %), script on; 2 processes against 13 to 16",
+      "kind": "file",
+      "verify": "python3 -c \"import sys;t=' '.join(open('TECHNICAL-DISCLOSURE.md',encoding='utf-8').read().split());f=[\\\"211.3 MiB against 7,297.6 MiB for Firefox (2.9 %)\\\", \\\"308.8 against 7,423.6 MiB (4.2 %)\\\", \\\"2 processes against 13 to 16\\\"];m=[x for x in f if x not in t];sys.exit('MISSING: %s' % m) if m else print('211.3 MiB against 7,297.6 MiB')\"",
+      "expect": "211.3 MiB against 7,297.6 MiB",
+      "evidence": [
+        "TECHNICAL-DISCLOSURE.md",
+        "DOSSIER.md"
+      ],
+      "runtime_s": 1,
+      "needs": [
+        "python3"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "Ten web pages were opened in Omni Web and in Firefox and the proportional memory (PSS) of every process of each browser was summed; the peak of the sum is the score. Omni Web used 211.3 MiB with scripts off against Firefox's 7,297.6 MiB (2.9 %), and 308.8 against 7,423.6 MiB with scripts on (4.2 %), using 2 processes against 13 to 16. Passing this check confirms the committed record; it does not re-measure. It shows document-style pages are very cheap, not that every page is.",
+      "how_we_got_it": "One laptop, i5-8365U (4 cores / 8 threads); wall times are noisy (TECHNICAL-DISCLOSURE.md header, 'measured 2026-10-06 to 2026-10-09'). Harness: tools/ram_bench.py (omni-ui `script web --script`, open the URL and hold 5 s; Firefox with the URL on the command line, 15 s; both headless); output was results/browser-body-0/ram.json + ram.md, which are not in this repo. The page list is in the script; the Firefox version is not recorded in the repo.",
+      "use_in_your_work": "If you pick a browser (or build a viewer) for an old or small machine, summed PSS over all processes is the fair memory measure for a multi-process browser; tools/ram_bench.py shows how to take it, and you can point it at your own pages.",
+      "honest_limits": "Ten pages, mostly documents (Wikipedia, Rust book, PEP 8 ...). Headless, so no window surface. See U3: script-heavy pages are not light. Needs a built omni-ui and Firefox to repeat, so the re-run is external (U1b).",
+      "corrections": []
+    },
+    {
+      "id": "U1b",
+      "title": "Re-run the memory bench against Firefox",
+      "claim": "tools/ram_bench.py: summed PSS of omni-ui's broker + page process vs Firefox on a list of pages, output ram.json + ram.md",
+      "kind": "external",
+      "verify": "python3 tools/ram_bench.py",
+      "expect": "ram.json and ram.md written under results/browser-body-0",
+      "evidence": [
+        "tools/ram_bench.py"
+      ],
+      "runtime_s": 900,
+      "needs": [
+        "cargo (Rust 2024 edition) to build omni-ui",
+        "firefox",
+        "network access to the page list",
+        "Linux (PSS from /proc)"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "The script launches the browsers, opens each page, sums PSS over all child processes and writes the comparison. Passing means you have reproduced the ratio on your machine for your page list. It is the re-run of U1.",
+      "how_we_got_it": "tools/ram_bench.py (docstring: omni-ui `script web --script` holds 5 s; Firefox 15 s; headless). No result file is committed in this repo.",
+      "use_in_your_work": "Your own before/after memory comparison when choosing or modifying a browser.",
+      "honest_limits": "Needs the network, Firefox and a cargo-built omni-ui, so it is not runnable inside the suite check.",
+      "corrections": []
+    },
+    {
+      "id": "U2",
+      "title": "Connectivity: 13 of 13 routes pass in each of three runs",
+      "claim": "13 of 13 routes pass in each of three runs (gzip, chunked, redirects, 404 and 500 pages, 204 without waiting, cookies, latin-1, close-delimited body, document.cookie); the cookie jar is first-party only and in memory unless the person chooses to keep it",
+      "kind": "file",
+      "verify": "python3 -c \"import sys;t=' '.join(open('TECHNICAL-DISCLOSURE.md',encoding='utf-8').read().split());f=[\\\"13 of 13 routes pass in each of three runs\\\", \\\"first-party only and in memory\\\"];m=[x for x in f if x not in t];sys.exit('MISSING: %s' % m) if m else print('13 of 13 routes')\"",
+      "expect": "13 of 13 routes",
+      "evidence": [
+        "TECHNICAL-DISCLOSURE.md",
+        "DOSSIER.md"
+      ],
+      "runtime_s": 1,
+      "needs": [
+        "python3"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "A set of 13 HTTP behaviours (compressed and chunked bodies, redirects, error pages, a 204 that must not wait, cookies, latin-1 text, a body ended by closing the connection, document.cookie) was served to the browser and all 13 worked in each of three runs. Passing confirms the record. It shows basic web-protocol handling, not compatibility with arbitrary sites (see U3).",
+      "how_we_got_it": "One laptop, i5-8365U (4 cores / 8 threads); wall times are noisy (TECHNICAL-DISCLOSURE.md header, 'measured 2026-10-06 to 2026-10-09'). The route list and server are described in the Technical Disclosure; the harness is not in this repo (the README says harnesses are in the research corpus), and no result file is committed. The same 13/13 is part of the merge gate (U4).",
+      "use_in_your_work": "A compact list of the protocol edge cases a from-scratch HTTP client needs to pass before it is usable; copy it as a checklist.",
+      "honest_limits": "Routes are the project's own test server, not the open web.",
+      "corrections": []
+    },
+    {
+      "id": "U3",
+      "title": "Honest negatives: 24-site census, 'lightweight' fails on script-heavy pages",
+      "claim": "24 real sites: a frame on 24 of 24, scripts ran / failed 402 / 39; 'Lightweight' holds for document pages and fails for script-heavy pages (up to 2.23 GB)",
+      "kind": "file",
+      "verify": "python3 -c \"import sys;t=' '.join(open('TECHNICAL-DISCLOSURE.md',encoding='utf-8').read().split());f=[\\\"a frame on 24 of 24\\\", \\\"402 / 39\\\", \\\"\\\\\\\"24 of 24\\\\\\\" means a frame, not a usable page\\\", \\\"(8 pages built 821 px or less)\\\", \\\"up to 2.23 GB\\\", \\\"fails for script-heavy pages\\\"];m=[x for x in f if x not in t];sys.exit('MISSING: %s' % m) if m else print('24 of 24 frames; 402 / 39; 2.23 GB')\" && python3 -c \"import sys;t=' '.join(open('DOSSIER.md',encoding='utf-8').read().split());f=[\\\"No screen-reader session and no daily-use test recorded\\\", \\\"Not light on script-heavy pages\\\"];m=[x for x in f if x not in t];sys.exit('MISSING: %s' % m) if m else print('no screen-reader session recorded')\"",
+      "expect": "24 of 24 frames; 402 / 39; 2.23 GB",
+      "evidence": [
+        "TECHNICAL-DISCLOSURE.md",
+        "DOSSIER.md"
+      ],
+      "runtime_s": 1,
+      "needs": [
+        "python3"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "A census of 24 real sites drew a frame for every one, but the disclosure says plainly that this means a frame and not a usable page: 8 pages were 821 px tall or less; scripts ran 402 times and failed 39; median page process was 112 MB and three pages reached 500 MB or more, up to 2.23 GB. The dossier also states that no screen-reader session and no daily-use test is recorded. Passing confirms these limits are published beside the headline numbers.",
+      "how_we_got_it": "One laptop, i5-8365U (4 cores / 8 threads); wall times are noisy (TECHNICAL-DISCLOSURE.md header, 'measured 2026-10-06 to 2026-10-09'). 24-site census, third run (2026-10-08 in the dossier history). Result files are not in this repo.",
+      "use_in_your_work": "Use it to decide whether the browser fits your pages: good for documents, not yet for video and app sites.",
+      "honest_limits": "Transforms and keyframes (compositor) are not built; the video site's music front end was not made usable; paint error against Chrome, frame times and screen-reader sessions were logged but their results were not retained (TECHNICAL-DISCLOSURE.md section 3).",
+      "corrections": []
+    },
+    {
+      "id": "U4",
+      "title": "Merge gate: layout baseline unchanged, JS probe 106/106, connectivity 13/13, ECMAScript tests 54.5 %",
+      "claim": "layout baseline unchanged (24,032 of 28,040 boxes agree with Chrome, 85.7 %), compiled and interpreted knob lookups identical (2,866,688), binary gate 0 lost, JavaScript probe 106 of 106, connectivity 13 of 13; 29,203 of 53,607 executed ECMAScript conformance tests pass (54.5 %); later rounds 55.33 % and 56.85 %",
+      "kind": "file",
+      "verify": "python3 -c \"import sys;t=' '.join(open('TECHNICAL-DISCLOSURE.md',encoding='utf-8').read().split());f=[\\\"24,032 of 28,040 boxes agree with Chrome, 85.7 %\\\", \\\"(2,866,688)\\\", \\\"binary gate 0 lost\\\", \\\"JavaScript probe 106 of 106\\\", \\\"connectivity 13 of 13\\\", \\\"29,203 of 53,607 executed ECMAScript conformance tests pass (54.5 %)\\\", \\\"55.33 % and 56.85 %\\\", \\\"106 of 106 on eight saved gate builds\\\"];m=[x for x in f if x not in t];sys.exit('MISSING: %s' % m) if m else print('24,032 of 28,040; 106 of 106; 29,203 of 53,607')\"",
+      "expect": "24,032 of 28,040; 106 of 106; 29,203 of 53,607",
+      "evidence": [
+        "TECHNICAL-DISCLOSURE.md"
+      ],
+      "runtime_s": 1,
+      "needs": [
+        "python3"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "Before main moves to a new engine pin, the exact commit is gated: the layout agreement with Chrome is unchanged (24,032 of 28,040 boxes, 85.7 %), the compiled and interpreted knob lookups are identical across 2,866,688, no boxes are lost, a 106-check platform probe passes 106 of 106 (on eight saved gate builds) and connectivity passes 13 of 13. Separately, 29,203 of 53,607 executed ECMAScript conformance tests pass (54.5 %), rising to 56.85 % in later rounds. Passing confirms the record; it shows the gate rule, not that every future pin passes.",
+      "how_we_got_it": "One laptop, i5-8365U (4 cores / 8 threads); wall times are noisy (TECHNICAL-DISCLOSURE.md header, 'measured 2026-10-06 to 2026-10-09'). Pinning: tools/pin-engine.sh <rev>, then `omni-ui --engine-rev` must equal .engine/REV (README.md, LICENSING.md). The gate scripts live in the omni-render repository (tests/js-compile-0). The result files are not in this repo.",
+      "use_in_your_work": "A release rule you can copy: never move the engine pin unless baseline, probe and connectivity gates pass on that exact commit, and make the binary report which engine commit it was built from.",
+      "honest_limits": "About 45 % of executed conformance tests still fail. Probe and gate builds are not committed.",
+      "corrections": []
+    },
+    {
+      "id": "U5",
+      "title": "Contrast by arithmetic: 1.02:1 fixed to at least 4.5:1; one failed design disclosed",
+      "claim": "Dark glass at alpha 0.58 over white gave the third text tone 1.02 : 1; glass alpha 0.88 with re-chosen tones gives every text colour at least 4.5 : 1 against the worst backdrop; nine of eleven engine capabilities built",
+      "kind": "file",
+      "verify": "python3 -c \"import sys;t=' '.join(open('TECHNICAL-DISCLOSURE.md',encoding='utf-8').read().split());f=[\\\"alpha 0.58 over white gave the third text tone 1.02 : 1\\\", \\\"glass alpha 0.88\\\", \\\"at least 4.5 : 1 against the worst backdrop\\\", \\\"eleven engine capabilities; nine were built\\\"];m=[x for x in f if x not in t];sys.exit('MISSING: %s' % m) if m else print('1.02 : 1; 4.5 : 1; nine of eleven')\"",
+      "expect": "1.02 : 1; 4.5 : 1; nine of eleven",
+      "evidence": [
+        "TECHNICAL-DISCLOSURE.md",
+        "DOSSIER.md"
+      ],
+      "runtime_s": 1,
+      "needs": [
+        "python3"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "The first translucent dark-glass chrome had a text tone with a contrast ratio of 1.02 : 1 over a white page, i.e. nearly invisible. Raising the glass opacity to 0.88 and choosing tones by calculation gave every text colour at least 4.5 : 1 (the WCAG AA level) against the worst backdrop. The same section records that the first design was rejected by the author and the second asked for eleven engine capabilities, of which nine were built. Passing confirms the record.",
+      "how_we_got_it": "TECHNICAL-DISCLOSURE.md section 1 items 7 and 8 (2026-10-07 in the dossier). The contrast arithmetic is WCAG's ratio; the script that computes it is not in this repo.",
+      "use_in_your_work": "Check translucent UI colours by computing the worst-case backdrop ratio, not by eye.",
+      "honest_limits": "Contrast is not accessibility: the dossier states that no screen-reader session and no daily-use test is recorded. Transforms and keyframes are not built.",
+      "corrections": []
+    },
+    {
+      "id": "U6",
+      "title": "Vault link-resolver fixture holds 20 expected resolutions",
+      "claim": "Fixture vault: 20 expected link resolutions from Obsidian's documented rules (unique name, case-insensitive, path from root, duplicate names, headings, relative links)",
+      "kind": "file",
+      "verify": "python3 -c \"import json;d=json.load(open('tests/fixtures/vault-expect.json'));t=open('tests/verify_vault.py').read();assert '20 expected resolutions' in t;assert len(d)==20;print(len(d),'expected resolutions')\"",
+      "expect": "20 expected resolutions",
+      "evidence": [
+        "tests/fixtures/vault-expect.json",
+        "tests/verify_vault.py"
+      ],
+      "runtime_s": 1,
+      "needs": [
+        "python3"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "The fixture file lists 20 (source note, link text, expected target, rule) rows, such as a case-insensitive name, a path from the vault root, a duplicate name that is ambiguous, a heading that exists, and a relative wikilink. This check confirms the fixture holds those 20 cases and that the verify script describes them. It does NOT run the resolver: that needs the omni-ui binary (U8). It is the answer key, not a result.",
+      "how_we_got_it": "tests/fixtures/vault (a small made-up vault with Alpha, Beta in two folders, Gamma, Home, Notes/Delta Note, hidden .obsidian and .trash folders) and tests/fixtures/vault-expect.json; verify script tests/verify_vault.py (NEURAL-APPS-0 N1). No run result is committed.",
+      "use_in_your_work": "Reuse the answer key as a conformance test for any Obsidian-style link resolver you write; the cases cover the ambiguous ones that usually go wrong.",
+      "honest_limits": "No pass/fail record from running the Rust resolver is in the repo.",
+      "corrections": []
+    },
+    {
+      "id": "U7",
+      "title": "Residue-clock recurrence check: 10,000 random rule pairs, 0 mismatches required",
+      "claim": "`omni-ui recur-check 10000`: residue answers vs direct enumeration on 10k random rule pairs (day / month rings, COUNT, UNTIL, EXDATE, time-of-day overlap) -> 0 mismatches required",
+      "kind": "external",
+      "verify": "python3 tests/verify_recur.py",
+      "expect": "exit 0 (0 mismatches)",
+      "evidence": [
+        "tests/verify_recur.py"
+      ],
+      "runtime_s": 300,
+      "needs": [
+        "cargo (Rust 2024 edition) to build target/release/omni-ui",
+        "python3 >= 3.8",
+        "bin/reason-gen from the author's stack for part 2 (not in this repo)"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "Calendar recurrence rules (weekly, monthly, COUNT, UNTIL, exceptions) are answered with residue arithmetic; the script compares those answers with plain enumeration over 10,000 random rule pairs and requires zero mismatches. Passing proves the residue shortcut agrees with the slow enumeration on that sample. It does not test the Calendar window or time zones.",
+      "how_we_got_it": "tests/verify_recur.py (NEURAL-APPS-0 C1) runs `target/release/omni-ui recur-check 10000` with a 900 s timeout. No result is committed and no machine or date is recorded for a pass in this repo.",
+      "use_in_your_work": "A differential test pattern for any scheduling or recurrence code: a fast closed-form answer checked against brute force on random inputs.",
+      "honest_limits": "Part 2 of the script needs the author's reason-gen calendar solver, which is not in this repo. Marked external because it needs the built binary.",
+      "corrections": []
+    },
+    {
+      "id": "U8",
+      "title": "Calendar: 12-event .ics agenda equals python-dateutil",
+      "claim": "A 12-event .ics (weekly, multi-weekday, fortnightly, monthly on the 31st, yearly on 29 Feb, COUNT, UNTIL, one-off, 2nd Tuesday, last Friday, and one unsupported rule BYSETPOS) over 8 weeks equals dateutil exactly; the unsupported rule is reported and gets no occurrences",
+      "kind": "external",
+      "verify": "python3 tests/verify_calendar.py",
+      "expect": "exit 0",
+      "evidence": [
+        "tests/verify_calendar.py"
+      ],
+      "runtime_s": 300,
+      "needs": [
+        "cargo (Rust 2024 edition) to build omni-ui",
+        "python3 with python-dateutil",
+        "a desktop session with AT-SPI (pyatspi), espeak-ng, whisper.cpp for the window part",
+        "access-pack (the author's input bus, not in this repo)"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "An independent implementation (python-dateutil) expands the same 12 recurring events; omni-ui's agenda for eight weeks must match date, start, end and title exactly, and the first clash of every event pair must match a 12-year brute force. The script then drives the window by key, text, voice, switch and assistive-technology click and requires the same single action. Passing proves the calendar agrees with dateutil on those cases and that five input routes reach one action. It does not cover the full iCalendar standard: one rule type is deliberately unsupported.",
+      "how_we_got_it": "tests/verify_calendar.py (NEURAL-APPS-0 C2). Oracle: dateutil.rrule. Side effects, undone: AT-SPI enable flag toggled, one window opened. No result file is committed.",
+      "use_in_your_work": "A model for accessibility tests: one action reached by keyboard, typed text, voice, a switch scan and a screen-reader click, all checked by script.",
+      "honest_limits": "Needs the window, audio tooling and the access-pack module that sits beside the repo in the author's workspace (`HERE.parent / access-pack`), so it is not runnable from a fresh clone of this repository alone.",
+      "corrections": []
+    },
+    {
+      "id": "U9",
+      "title": "Reader: OCR word accuracy >= 0.95 overall, >= 0.90 worst page; reflow keeps boxes inside the window",
+      "claim": "For 5 degraded scans, the reader shows exactly the words access.read produced; OCR word accuracy vs source >= 0.95 overall, >= 0.90 worst page; at 20 / 32 / 48 px no box passes the window's right edge",
+      "kind": "external",
+      "verify": "python3 tests/verify_reader.py",
+      "expect": "exit 0",
+      "evidence": [
+        "tests/verify_reader.py"
+      ],
+      "runtime_s": 600,
+      "needs": [
+        "cargo (Rust 2024 edition) to build omni-ui",
+        "the access-pack module and its bench_read scans (not in this repo)",
+        "AT-SPI desktop session, espeak-ng, whisper.cpp"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "Five deliberately degraded scans (skew, blur, uneven light, noise, JPEG 60; two at 200 dpi) are read aloud-ready by the reader. The script requires the displayed words to equal the OCR output, word accuracy of at least 0.95 overall and 0.90 on the worst page (the bars of bench_read), no box past the right edge at several text sizes, and a window where 'bigger' works from five input routes. Passing proves those thresholds on those five scans, not on arbitrary documents.",
+      "how_we_got_it": "tests/verify_reader.py (NEURAL-APPS-0 step 5), seed 1004. The numbers are the bars the script enforces; no measured accuracy is committed in this repo.",
+      "use_in_your_work": "Use the bars (0.95 / 0.90) and the reflow rule as acceptance criteria for any reading aid for low-vision users.",
+      "honest_limits": "The inputs and the OCR module are outside this repo. No daily-use test is recorded (DOSSIER.md Limits).",
+      "corrections": []
+    },
+    {
+      "id": "U10",
+      "title": "Notes and Library apps read the vault and corpus without writing",
+      "claim": "Notes on a real vault, READ-FORWARD: sha256 of every note before = after; strace shows 0 write-mode opens, renames, deletes or mkdirs under the vault; Library: 0 write-mode opens under any shelf root",
+      "kind": "external",
+      "verify": "python3 tests/verify_notes.py && python3 tests/verify_library.py",
+      "expect": "exit 0",
+      "evidence": [
+        "tests/verify_notes.py",
+        "tests/verify_library.py"
+      ],
+      "runtime_s": 900,
+      "needs": [
+        "cargo (Rust 2024 edition) to build omni-ui",
+        "strace",
+        "a real Obsidian vault and document shelves (the author's, not in this repo)",
+        "AT-SPI desktop session"
+      ],
+      "cpu_flags": [],
+      "what_it_means": "The scripts hash every note before and after, trace file-system calls while the app runs and renders every note once, and require no write-mode opens anywhere under the vault, no drawn ink past the window edge, and the Library's essence text to equal the launcher's own extractor byte for byte. Passing proves the apps are read-only on that vault and that rendering does not overflow. They report counts only.",
+      "how_we_got_it": "tests/verify_notes.py (N2) and tests/verify_library.py (step L). The author's own vault and corpus are used; neither is in this repo and no result is committed.",
+      "use_in_your_work": "A way to prove 'this tool never modifies my notes': hash before and after plus strace of the process.",
+      "honest_limits": "Cannot be reproduced from a fresh clone: they need the author's vault, shelf roots, the launcher JavaScript and the access-pack module.",
+      "corrections": []
+    }
+  ]
+}
