@@ -1,0 +1,20 @@
+# omni-ui
+
+> Native apps and a light-use web browser drawn by the omni-render engine.
+
+Setup: `git clone --depth 1 https://github.com/SovRing-Labs/omni-ui && cd omni-ui && git clone --depth 1 https://github.com/SovRing-Labs/omni-render ../omni-render && tools/pin-engine.sh $(git -C ../omni-render rev-parse HEAD) && cargo build --release && python3 tests/verify_calendar.py` (expect: exit 0).
+Licence: MIT OR Apache-2.0 (omni-ui-t25 binary PolyForm).
+
+## Docs
+- [README.md](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/README.md)
+- [DOSSIER.md](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/DOSSIER.md)
+- [TECHNICAL-DISCLOSURE.md](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/TECHNICAL-DISCLOSURE.md)
+- [PROVENANCE.md](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/PROVENANCE.md)
+- [LICENSING.md](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/LICENSING.md)
+- [CITATION.cff](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/CITATION.cff)
+- [AGENTS.md](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/AGENTS.md)
+- [STATUS.md](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/STATUS.md)
+- [suite.json](https://raw.githubusercontent.com/SovRing-Labs/omni-ui/main/suite.json)
+
+## Optional
+- [SovRing umbrella (all repos, MCP setup)](https://github.com/SovRing-Labs/SovRing)
